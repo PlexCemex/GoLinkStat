@@ -1,0 +1,1 @@
+GoLinkStat is a powerful link-shortening API with detailed analytics, built on the pure net/http package. The project features flexible routing and request/response handling via middleware, PostgreSQL integration using GORM, and email-based user authentication.
