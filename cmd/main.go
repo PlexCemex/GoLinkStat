@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"projects/GoLinkStat/configs"
 	"projects/GoLinkStat/internal/hello"
 )
 
 func main() {
+	conf := configs.LoadConfig()
 	router := http.NewServeMux()
 	hello.NewHelloHandler(router)
 	server := http.Server{
