@@ -3,15 +3,16 @@ package main
 import (
 	"fmt"
 	"net/http"
-	// "projects/GoLinkStat/configs"
+	"projects/GoLinkStat/configs"
 	"projects/GoLinkStat/internal/auth"
 )
 
 func main() {
-	// conf := configs.LoadConfig()
-
+	conf := configs.LoadConfig()
 	router := http.NewServeMux()
-	auth.NewAuthHandler(router)
+	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
+		Config: conf,
+	})
 	server := http.Server{
 		Addr:    ":7080",
 		Handler: router,
