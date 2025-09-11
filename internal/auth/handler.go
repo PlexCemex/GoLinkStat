@@ -1,10 +1,10 @@
 package auth
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"projects/GoLinkStat/configs"
+	"projects/GoLinkStat/pkg/response"
 )
 
 type AuthHandlerDeps struct {
@@ -35,8 +35,6 @@ func (auth *authHandler) Login() http.HandlerFunc {
 		res := LoginResponse {
 			Token: auth.Auth.Secret,
 		}
-		resWritter.Header().Set("Content-Type","application/json")
-		resWritter.WriteHeader(201)
-		json.NewEncoder(resWritter).Encode(res)
+		response.ResponseJson(res, resWritter, 200)
 	}
 }
