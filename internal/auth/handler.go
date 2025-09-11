@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"projects/GoLinkStat/configs"
@@ -31,5 +32,11 @@ func (auth *authHandler) Login() http.HandlerFunc {
 	return func(resWritter http.ResponseWriter, req *http.Request) {
 		fmt.Println(auth.Config.Auth.Secret)
 		fmt.Println("Login")
+		res := LoginResponse {
+			Token: auth.Auth.Secret,
+		}
+		resWritter.Header().Set("Content-Type","application/json")
+		resWritter.WriteHeader(201)
+		json.NewEncoder(resWritter).Encode(res)
 	}
 }
