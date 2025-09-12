@@ -5,10 +5,12 @@ import (
 	"net/http"
 	"projects/GoLinkStat/configs"
 	"projects/GoLinkStat/internal/auth"
+	"projects/GoLinkStat/pkg/db"
 )
 
 func main() {
 	conf := configs.LoadConfig()
+	_ = db.NewDb(conf)
 	router := http.NewServeMux()
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
 		Config: conf,
