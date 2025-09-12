@@ -1,3 +1,4 @@
 /cmd/__debug_bin.exe
 /postgres-data
 /.env
+/.vscode/
