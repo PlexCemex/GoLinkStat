@@ -5,16 +5,26 @@ import (
 	"net/http"
 	"projects/GoLinkStat/configs"
 	"projects/GoLinkStat/internal/auth"
+	"projects/GoLinkStat/internal/link"
 	"projects/GoLinkStat/pkg/db"
 )
 
 func main() {
 	conf := configs.LoadConfig()
-	_ = db.NewDb(conf)
+	dataBase := db.NewDb(conf)
 	router := http.NewServeMux()
+
+	// Repository
+	linkRepository := link.NewLinkRepository(dataBase)
+
+	// Handlers
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
 		Config: conf,
 	})
+	link.NewLinkHandler(router, link.LinkHandlerDeps{
+		LinkRepository: linkRepository,
+	})
+
 	server := http.Server{
 		Addr:    ":7080",
 		Handler: router,
@@ -23,4 +33,4 @@ func main() {
 	server.ListenAndServe()
 }
 
-// 9.1
+// 9.4

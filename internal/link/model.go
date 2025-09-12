@@ -2,7 +2,6 @@ package link
 
 import (
 	"math/rand"
-
 	"gorm.io/gorm"
 )
 
