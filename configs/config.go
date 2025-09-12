@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-
 	"github.com/joho/godotenv"
 )
 

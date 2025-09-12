@@ -25,36 +25,35 @@ func NewAuthHandler(router *http.ServeMux, deps AuthHandlerDeps) {
 }
 
 func (auth *authHandler) Register() http.HandlerFunc {
-	return func(resWritter http.ResponseWriter, req *http.Request) {
+	return func(resWriter http.ResponseWriter, req *http.Request) {
 		fmt.Println("Register")
 	}
 }
 
 func (auth *authHandler) Login() http.HandlerFunc {
-	return func(resWritter http.ResponseWriter, req *http.Request) {
+	return func(resWriter http.ResponseWriter, req *http.Request) {
 		var requestLogin LoginRequest
 		err := json.NewDecoder(req.Body).Decode(&requestLogin)
 		if err != nil {
-			response.ResponseJson(err.Error(), resWritter, 402)
+			response.ResponseJson(err.Error(), resWriter, 402)
 			return
 		}
 		if requestLogin.Email == "" {
-			response.ResponseJson("Empty or wrong email", resWritter, 402)
+			response.ResponseJson("Empty email", resWriter, 402)
 			return
 		}
-		regEmail, _ := regexp.Compile(`^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$`)
-		if !regEmail.MatchString(requestLogin.Email) {
-			response.ResponseJson("Wrong email", resWritter, 402)
+		if match, _ := regexp.MatchString(`[A-Za-z0-9\._%+\-]+@[A-Za-z0-9\.\-]+\.[A-Za-z]{2,}`, requestLogin.Email); !match  {
+			response.ResponseJson("Wrong email", resWriter, 402)
 			return
 		}
 		if requestLogin.Password == "" {
-			response.ResponseJson("Empty or wrong password", resWritter, 402)
+			response.ResponseJson("Empty or wrong password", resWriter, 402)
 			return
 		}
 		fmt.Println(requestLogin)
 		res := LoginResponse{
 			Token: auth.Auth.Secret,
 		}
-		response.ResponseJson(res, resWritter, 200)
+		response.ResponseJson(res, resWriter, 200)
 	}
 }
