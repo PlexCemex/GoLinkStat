@@ -33,7 +33,7 @@ func (auth *authHandler) Register() http.HandlerFunc {
 		res := RegisterResponse{
 			Token: auth.Auth.Secret,
 		}
-		response.ResponseJson(res, resWriter, 201)
+		response.Json(res, resWriter, 201)
 	}
 }
 
@@ -47,6 +47,6 @@ func (auth *authHandler) Login() http.HandlerFunc {
 		res := LoginResponse{
 			Token: auth.Auth.Secret,
 		}
-		response.ResponseJson(res, resWriter, 200)
+		response.Json(res, resWriter, 200)
 	}
 }

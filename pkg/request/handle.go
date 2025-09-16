@@ -6,14 +6,14 @@ import (
 )
 
 func HandleBody[T any](resWriter *http.ResponseWriter, req *http.Request) (*T, error) {
-	body, err := Decode[T](req.Body)
+	body, err := decode[T](req.Body)
 	if err != nil {
-		response.ResponseJson(err.Error(), *resWriter, 402)
+		response.Json(err.Error(), *resWriter, 402)
 		return nil, err
 	}
-	err = ValidatorBody(body)
+	err = validatorBody(body)
 	if err != nil {
-		response.ResponseJson(err.Error(), *resWriter, 402)
+		response.Json(err.Error(), *resWriter, 402)
 		return nil, err
 	}
 	return &body, nil
