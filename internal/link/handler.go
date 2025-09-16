@@ -31,12 +31,17 @@ func (handler *LinkHandler) Create() http.HandlerFunc {
 			return
 		}
 		link := NewLink(body.Url)
+		for {
+			if existedLink, _ := handler.LinkRepository.GetByHash(link.Hash); existedLink == nil {
+				break
+			}
+			link.GenerateHash()
+		}
 		createdLink, err := handler.LinkRepository.Create(link)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		fmt.Println(link, createdLink)
 		response.Json(createdLink, w, 201)
 	}
 }
