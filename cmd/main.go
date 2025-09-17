@@ -28,10 +28,10 @@ func main() {
 
 	server := http.Server{
 		Addr:    ":7080",
-		Handler: middleware.Logging(router),
+		Handler: middleware.CORS(middleware.Logging(router)),
 	}
 	fmt.Println("Server is listening on port:", server.Addr)
 	server.ListenAndServe()
 }
 
-// 10.4
+// 10.5
