@@ -1,11 +1,11 @@
 package link
 
 import (
+	"gorm.io/gorm"
 	"net/http"
 	"projects/GoLinkStat/pkg/request"
 	"projects/GoLinkStat/pkg/response"
 	"strconv"
-	"gorm.io/gorm"
 )
 
 type LinkHandlerDeps struct {
@@ -83,7 +83,7 @@ func (handler *LinkHandler) Update() http.HandlerFunc {
 }
 func (handler *LinkHandler) Delete() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		idString:= r.PathValue("id")
+		idString := r.PathValue("id")
 		id, err := strconv.ParseUint(idString, 10, 64)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
