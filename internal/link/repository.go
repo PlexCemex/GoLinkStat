@@ -1,6 +1,7 @@
 package link
 
 import (
+	"errors"
 	"projects/GoLinkStat/pkg/db"
 
 	"gorm.io/gorm/clause"
@@ -29,6 +30,15 @@ func (repo *LinkRepository) GetByHash(hash string) (*Link, error) {
 	result := repo.DataBase.DB.First(&link, "hash = ?", hash)
 	if result.Error != nil {
 		return nil, result.Error
+	}
+	return &link, nil
+}
+
+func (repo *LinkRepository) GetById(id uint) (*Link, error) {
+	var link Link
+	result := repo.DataBase.DB.First(&link, id)
+	if result.Error != nil {
+		return nil, errors.New("Link for deleating not found")
 	}
 	return &link, nil
 }
