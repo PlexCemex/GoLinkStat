@@ -7,6 +7,7 @@ import (
 	"projects/GoLinkStat/internal/auth"
 	"projects/GoLinkStat/internal/link"
 	"projects/GoLinkStat/pkg/db"
+	"projects/GoLinkStat/pkg/middleware"
 )
 
 func main() {
@@ -27,10 +28,10 @@ func main() {
 
 	server := http.Server{
 		Addr:    ":7080",
-		Handler: router,
+		Handler: middleware.Logging(router),
 	}
 	fmt.Println("Server is listening on port:", server.Addr)
 	server.ListenAndServe()
 }
 
-// 10.1
+// 10.4

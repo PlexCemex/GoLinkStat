@@ -24,8 +24,8 @@ func NewAuthHandler(router *http.ServeMux, deps AuthHandlerDeps) {
 }
 
 func (auth *authHandler) Register() http.HandlerFunc {
-	return func(resWriter http.ResponseWriter, req *http.Request) {
-		requestRegister, err := request.HandleBody[RegisterRequest](&resWriter, req)
+	return func(w http.ResponseWriter, r *http.Request) {
+		requestRegister, err := request.HandleBody[RegisterRequest](&w, r)
 		if err != nil {
 			return
 		}
@@ -33,13 +33,13 @@ func (auth *authHandler) Register() http.HandlerFunc {
 		res := RegisterResponse{
 			Token: auth.Auth.Secret,
 		}
-		response.Json(res, resWriter, 201)
+		response.Json(res, w, 201)
 	}
 }
 
 func (auth *authHandler) Login() http.HandlerFunc {
-	return func(resWriter http.ResponseWriter, req *http.Request) {
-		requestLogin, err := request.HandleBody[LoginRequest](&resWriter, req)
+	return func(w http.ResponseWriter, r *http.Request) {
+		requestLogin, err := request.HandleBody[LoginRequest](&w, r)
 		if err != nil {
 			return
 		}
@@ -47,6 +47,6 @@ func (auth *authHandler) Login() http.HandlerFunc {
 		res := LoginResponse{
 			Token: auth.Auth.Secret,
 		}
-		response.Json(res, resWriter, 200)
+		response.Json(res, w, 200)
 	}
 }
