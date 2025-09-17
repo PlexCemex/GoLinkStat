@@ -29,7 +29,7 @@ func main() {
 		Addr:    ":7080",
 		Handler: router,
 	}
-	fmt.Println("Server is listening on port 7080")
+	fmt.Println("Server is listening on port:", server.Addr)
 	server.ListenAndServe()
 }
 

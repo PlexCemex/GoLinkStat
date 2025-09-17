@@ -25,7 +25,7 @@ func (link *Link) GenerateHash() {
 	link.Hash = randStringRunes(lenOfHash)
 }
 
-var letterRunes = []rune("abcdefghijklmnoprstuvwxyzABCDEFGIJKLMNOPRSTUVWXYZ")
+var letterRunes = []rune("abcdefghijklmnoprstuvwxyzABCDEFGIJKLMNOPRSTUVWXYZ0123456789")
 
 func randStringRunes(n int) string {
 	result := make([]rune, n)
