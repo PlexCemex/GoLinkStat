@@ -30,7 +30,6 @@ func main() {
 	chain := middleware.Chain(
 		middleware.CORS,
 		middleware.Logging,
-		middleware.IsAuthed,
 	)
 
 	server := http.Server{
@@ -41,4 +40,4 @@ func main() {
 	server.ListenAndServe()
 }
 
-// 10.5
+// 11.1
