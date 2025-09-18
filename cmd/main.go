@@ -28,8 +28,9 @@ func main() {
 
 	// Middlewares
 	chain := middleware.Chain(
-		middleware.CORS, 
+		middleware.CORS,
 		middleware.Logging,
+		middleware.IsAuthed,
 	)
 
 	server := http.Server{
