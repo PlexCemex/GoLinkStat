@@ -6,15 +6,15 @@ import (
 	"projects/GoLinkStat/pkg/request"
 	"projects/GoLinkStat/pkg/response"
 	"strconv"
-
 	"gorm.io/gorm"
 )
 
 type LinkHandlerDeps struct {
-	LinkRepository *LinkRepository
+	*LinkRepository
+	
 }
 type LinkHandler struct {
-	LinkRepository *LinkRepository
+	*LinkRepository
 }
 
 func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {

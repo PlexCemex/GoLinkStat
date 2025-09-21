@@ -6,6 +6,7 @@ import (
 	"projects/GoLinkStat/configs"
 	"projects/GoLinkStat/internal/auth"
 	"projects/GoLinkStat/internal/link"
+	"projects/GoLinkStat/internal/user"
 	"projects/GoLinkStat/pkg/db"
 	"projects/GoLinkStat/pkg/middleware"
 )
@@ -17,10 +18,15 @@ func main() {
 
 	// Repository
 	linkRepository := link.NewLinkRepository(dataBase)
+	userRepository := user.NewUserRepository(dataBase)
+
+	// Services
+	authService := auth.NewAuthService(userRepository)
 
 	// Handlers
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
 		Config: conf,
+		AuthService: authService,
 	})
 	link.NewLinkHandler(router, link.LinkHandlerDeps{
 		LinkRepository: linkRepository,
@@ -40,4 +46,4 @@ func main() {
 	server.ListenAndServe()
 }
 
-// 11.1
+// 11.4

@@ -6,7 +6,7 @@ type UserRepository struct {
 	dataBase *db.Db
 }
 
-func newUserRepository(database *db.Db) *UserRepository {
+func NewUserRepository(database *db.Db) *UserRepository {
 	return &UserRepository{
 		dataBase: database,
 	}
