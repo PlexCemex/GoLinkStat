@@ -3,7 +3,6 @@ package link
 import (
 	"errors"
 	"projects/GoLinkStat/pkg/db"
-
 	"gorm.io/gorm/clause"
 )
 

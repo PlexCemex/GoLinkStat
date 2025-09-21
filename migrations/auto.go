@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"projects/GoLinkStat/internal/link"
+	"projects/GoLinkStat/internal/user"
 	"runtime"
-
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -27,5 +27,5 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	db.AutoMigrate(&link.Link{})
+	db.AutoMigrate(&link.Link{}, &user.User{})
 }
