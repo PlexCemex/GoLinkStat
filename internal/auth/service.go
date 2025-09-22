@@ -39,7 +39,7 @@ func (service *AuthService) Register(email, password, name string) (string, erro
 
 func (service *AuthService) Login(email, password string) (string, error) {
 	existedUser, err := service.UserRepository.GetByEmail(email)
-	if err != nil || existedUser == nil{
+	if err != nil || existedUser == nil {
 		return "", errors.New(ErrWrongCredentials)
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(existedUser.Password), []byte(password))

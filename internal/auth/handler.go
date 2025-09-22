@@ -44,7 +44,7 @@ func (auth *authHandler) Login() http.HandlerFunc {
 		}
 		existedEmail, err := auth.AuthService.Login(requestLogin.Email, requestLogin.Password)
 		if err != nil {
-			return 
+			return
 		}
 		fmt.Println(existedEmail, err)
 		data := LoginResponse{
