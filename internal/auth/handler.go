@@ -19,7 +19,7 @@ type authHandler struct {
 
 func NewAuthHandler(router *http.ServeMux, deps AuthHandlerDeps) {
 	handler := &authHandler{
-		Config: deps.Config,
+		Config:      deps.Config,
 		AuthService: deps.AuthService,
 	}
 	router.HandleFunc("POST /auth/register", handler.Register())
