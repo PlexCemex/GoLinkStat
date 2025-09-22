@@ -42,10 +42,14 @@ func (auth *authHandler) Login() http.HandlerFunc {
 		if err != nil {
 			return
 		}
-		fmt.Println(requestLogin)
-		res := LoginResponse{
+		existedEmail, err := auth.AuthService.Login(requestLogin.Email, requestLogin.Password)
+		if err != nil {
+			return 
+		}
+		fmt.Println(existedEmail, err)
+		data := LoginResponse{
 			Token: auth.Auth.Secret,
 		}
-		response.Json(res, w, 200)
+		response.Json(data, w, 200)
 	}
 }
