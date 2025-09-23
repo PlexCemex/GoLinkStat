@@ -13,7 +13,7 @@ func NewJWT(secret string) *JWT {
 }
 
 func (j *JWT) Create(email string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"Email": email,
 	})
 	s, err := token.SignedString([]byte(j.secret))

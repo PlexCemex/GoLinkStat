@@ -1,9 +1,9 @@
 package auth
 
 import (
-	"fmt"
 	"net/http"
 	"projects/GoLinkStat/configs"
+	"projects/GoLinkStat/pkg/jwt"
 	"projects/GoLinkStat/pkg/request"
 	"projects/GoLinkStat/pkg/response"
 )
@@ -26,29 +26,47 @@ func NewAuthHandler(router *http.ServeMux, deps AuthHandlerDeps) {
 	router.HandleFunc("POST /auth/login", handler.Login())
 }
 
-func (auth *authHandler) Register() http.HandlerFunc {
+func (handler *authHandler) Register() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		body, err := request.HandleBody[RegisterRequest](&w, r)
 		if err != nil {
 			return
 		}
-		auth.AuthService.Register(body.Email, body.Password, body.Name)
+		email, err := handler.AuthService.Register(body.Email, body.Password, body.Name)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
+		}
+		jwtToken, err := jwt.NewJWT(handler.Config.Auth.Secret).Create(email)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		data := RegisterResponse{
+			Token: jwtToken,
+		}
+		response.Json(data, w, 200)
 	}
 }
 
-func (auth *authHandler) Login() http.HandlerFunc {
+func (handler *authHandler) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		requestLogin, err := request.HandleBody[LoginRequest](&w, r)
 		if err != nil {
 			return
 		}
-		existedEmail, err := auth.AuthService.Login(requestLogin.Email, requestLogin.Password)
+		existedEmail, err := handler.AuthService.Login(requestLogin.Email, requestLogin.Password)
 		if err != nil {
+			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
-		fmt.Println(existedEmail, err)
+		jwtToken, err := jwt.NewJWT(handler.Config.Auth.Secret).Create(existedEmail)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 		data := LoginResponse{
-			Token: auth.Auth.Secret,
+			Token: jwtToken,
 		}
 		response.Json(data, w, 200)
 	}
