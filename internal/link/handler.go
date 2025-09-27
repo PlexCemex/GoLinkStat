@@ -1,6 +1,7 @@
 package link
 
 import (
+	"fmt"
 	"net/http"
 	"projects/GoLinkStat/configs"
 	"projects/GoLinkStat/pkg/middleware"
@@ -63,6 +64,10 @@ func (handler *LinkHandler) GoTo() http.HandlerFunc {
 }
 func (handler *LinkHandler) Update() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		email, ok := r.Context().Value(middleware.ContextEmailKey).(string)
+		if ok {
+			fmt.Println(email)
+		}
 		body, err := request.HandleBody[linkUpdateRequest](&w, r)
 		if err != nil {
 			return
