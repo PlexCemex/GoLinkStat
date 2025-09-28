@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"projects/GoLinkStat/internal/link"
+	"projects/GoLinkStat/internal/stat"
 	"projects/GoLinkStat/internal/user"
 	"runtime"
 	"github.com/joho/godotenv"
@@ -27,5 +28,5 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	db.AutoMigrate(&link.Link{}, &user.User{})
+	db.AutoMigrate(&link.Link{}, &user.User{}, &stat.Stat{})
 }
