@@ -26,6 +26,7 @@ func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
 	}
 	router.HandleFunc("POST /link", handler.Create())
 	router.Handle("GET /{hash}", middleware.IsAuthed(handler.GoTo(), deps.Config))
+	router.Handle("GET /link/", middleware.IsAuthed(handler.GetAll(), deps.Config))
 	router.Handle("PATCH /link/{id}", middleware.IsAuthed(handler.Update(), deps.Config))
 	router.HandleFunc("DELETE /link/{id}", handler.Delete())
 }
@@ -62,6 +63,26 @@ func (handler *LinkHandler) GoTo() http.HandlerFunc {
 		http.Redirect(w, r, link.Url, http.StatusTemporaryRedirect)
 	}
 }
+
+func (handler *LinkHandler) GetAll() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
+		if err != nil {
+			http.Error(w, "Invalid limit", http.StatusBadRequest)
+		}
+		offset, err := strconv.Atoi(r.URL.Query().Get("offset"))
+		if err != nil {
+			http.Error(w, "Invalid offset", http.StatusBadRequest)
+		}
+		links := handler.GetAllLinks(limit, offset) 
+		count := handler.GetCount()
+		response.Json(GetAllLinksResponse{
+			Links: links,
+			Count: count,
+		}, w, 200)
+	}
+}
+
 func (handler *LinkHandler) Update() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		email, ok := r.Context().Value(middleware.ContextEmailKey).(string)

@@ -2,8 +2,8 @@ package link
 
 import (
 	"errors"
-	"projects/GoLinkStat/pkg/db"
 	"gorm.io/gorm/clause"
+	"projects/GoLinkStat/pkg/db"
 )
 
 type LinkRepository struct {
@@ -56,5 +56,24 @@ func (repo *LinkRepository) Delete(id uint) error {
 		return result.Error
 	}
 	return nil
+}
 
+func (repo *LinkRepository) GetCount() int64 {
+	var count int64
+	repo.DataBase.Table("links").
+		Where("deleted_at is null").
+		Count(&count)
+	return count
+}
+
+func (repo *LinkRepository) GetAllLinks(limit, offset int) []Link {
+	var links []Link
+	repo.DataBase.
+		Table("links").
+		Where("deleted_at is null").
+		Order("id asc").
+		Limit(limit).
+		Offset(offset).
+		Scan(&links)
+	return links
 }
