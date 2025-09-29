@@ -11,7 +11,7 @@ type Link struct {
 	gorm.Model
 	Url  string `json:"url"`
 	Hash string `json:"hash" gorm:"uniqueIndex"`
-	Stats []stat.Stat `gorm:"containts:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Stats []stat.Stat `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 var lenOfHash = 7

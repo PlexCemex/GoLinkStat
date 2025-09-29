@@ -6,8 +6,8 @@ import (
 )
 
 type Stat struct {
-	Modek  gorm.Model
-	LinkId uint           `json:"link_id"`
+	gorm.Model
+	LinkID uint           `json:"link_id"`
 	Clicks int            `json:"clicks"`
 	Date   datatypes.Date `json:"date"`
 }
