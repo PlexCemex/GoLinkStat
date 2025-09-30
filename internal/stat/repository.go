@@ -1,18 +1,18 @@
 package stat
 
 import (
+	"gorm.io/datatypes"
 	"projects/GoLinkStat/pkg/db"
 	"time"
-	"gorm.io/datatypes"
 )
 
 type StatRepository struct {
 	db db.Db
 }
 
-func NewStatRepository(db db.Db) *StatRepository {
+func NewStatRepository(db *db.Db) *StatRepository {
 	return &StatRepository{
-		db: db,
+		db: *db,
 	}
 }
 
@@ -24,10 +24,10 @@ func (repo *StatRepository) AddClick(linkID uint) {
 		repo.db.Create(&Stat{
 			LinkID: linkID,
 			Clicks: 1,
-			Date: currentDate,
+			Date:   currentDate,
 		})
 	} else {
-		stat.Clicks ++
+		stat.Clicks++
 		repo.db.Save(&stat)
 	}
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"projects/GoLinkStat/configs"
-	"projects/GoLinkStat/internal/stat"
+	"projects/GoLinkStat/pkg/di"
 	"projects/GoLinkStat/pkg/middleware"
 	"projects/GoLinkStat/pkg/request"
 	"projects/GoLinkStat/pkg/response"
@@ -15,12 +15,12 @@ import (
 
 type LinkHandlerDeps struct {
 	*LinkRepository
-	*stat.StatRepository
+	StatRepository di.IStatRepository
 	*configs.Config
 }
 type LinkHandler struct {
 	*LinkRepository
-	*stat.StatRepository
+	StatRepository di.IStatRepository
 }
 
 func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
@@ -79,7 +79,7 @@ func (handler *LinkHandler) GetAll() http.HandlerFunc {
 		if err != nil {
 			http.Error(w, "Invalid offset", http.StatusBadRequest)
 		}
-		links := handler.GetAllLinks(limit, offset) 
+		links := handler.GetAllLinks(limit, offset)
 		count := handler.GetCount()
 		response.Json(GetAllLinksResponse{
 			Links: links,

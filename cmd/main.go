@@ -20,7 +20,7 @@ func main() {
 	// Repository
 	linkRepository := link.NewLinkRepository(dataBase)
 	userRepository := user.NewUserRepository(dataBase)
-	statRepository := stat.NewStatRepository(*dataBase)
+	statRepository := stat.NewStatRepository(dataBase)
 
 	// Services
 	authService := auth.NewAuthService(userRepository)
