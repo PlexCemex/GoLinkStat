@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"projects/GoLinkStat/configs"
-	"projects/GoLinkStat/pkg/di"
+	"projects/GoLinkStat/pkg/event"
 	"projects/GoLinkStat/pkg/middleware"
 	"projects/GoLinkStat/pkg/request"
 	"projects/GoLinkStat/pkg/response"
@@ -15,18 +15,18 @@ import (
 
 type LinkHandlerDeps struct {
 	*LinkRepository
-	StatRepository di.IStatRepository
+	EventBus *event.EventBus
 	*configs.Config
 }
 type LinkHandler struct {
 	*LinkRepository
-	StatRepository di.IStatRepository
+	EventBus *event.EventBus
 }
 
 func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
 	handler := &LinkHandler{
 		LinkRepository: deps.LinkRepository,
-		StatRepository: deps.StatRepository,
+		EventBus:       deps.EventBus,
 	}
 	router.HandleFunc("POST /link", handler.Create())
 	router.Handle("GET /{hash}", middleware.IsAuthed(handler.GoTo(), deps.Config))
@@ -64,7 +64,10 @@ func (handler *LinkHandler) GoTo() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
-		handler.StatRepository.AddClick(link.ID)
+		go handler.EventBus.Publish(event.Event{
+			Type: event.EventLinkVisited,
+			Data: link.ID,
+		})
 		http.Redirect(w, r, link.Url, http.StatusTemporaryRedirect)
 	}
 }

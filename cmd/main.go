@@ -9,6 +9,7 @@ import (
 	"projects/GoLinkStat/internal/stat"
 	"projects/GoLinkStat/internal/user"
 	"projects/GoLinkStat/pkg/db"
+	"projects/GoLinkStat/pkg/event"
 	"projects/GoLinkStat/pkg/middleware"
 )
 
@@ -16,6 +17,7 @@ func main() {
 	conf := configs.LoadConfig()
 	dataBase := db.NewDb(conf)
 	router := http.NewServeMux()
+	eventbus := event.NewEventBus()
 
 	// Repository
 	linkRepository := link.NewLinkRepository(dataBase)
@@ -24,6 +26,10 @@ func main() {
 
 	// Services
 	authService := auth.NewAuthService(userRepository)
+	statService := stat.NewStatService(stat.StatServiceDeps{
+		EventBus:       eventbus,
+		StatRepository: statRepository,
+	})
 
 	// Handlers
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
@@ -32,7 +38,7 @@ func main() {
 	})
 	link.NewLinkHandler(router, link.LinkHandlerDeps{
 		LinkRepository: linkRepository,
-		StatRepository: statRepository,
+		EventBus:       eventbus,
 		Config:         conf,
 	})
 
@@ -46,6 +52,9 @@ func main() {
 		Addr:    ":7080",
 		Handler: chain(router),
 	}
+
+	go statService.AddClick()
+
 	fmt.Println("Server is listening on port:", server.Addr)
 	server.ListenAndServe()
 }
