@@ -1,9 +1,11 @@
 package stat
 
 import (
-	"gorm.io/datatypes"
+	"fmt"
 	"projects/GoLinkStat/pkg/db"
 	"time"
+
+	"gorm.io/datatypes"
 )
 
 type StatRepository struct {
@@ -37,15 +39,18 @@ func (repo *StatRepository) GetStat(by string, from, to time.Time) []GetStatResp
 	var selectQuere string
 	switch by {
 	case GroupByDay:
-		selectQuere = "to_char(date, 'YYYY-MM-DD') as period, sum(clicks)"
+		selectQuere = "to_char(date, 'YYYY-MM-DD') as period, sum(clicks) as sum"
 	case GroupByMonth:
-		selectQuere = "to_char(date, 'YYYY-MM') as period, sum(clicks)"
+		selectQuere = "to_char(date, 'YYYY-MM') as period, sum(clicks) as sum"
 	}
-	repo.DB.Table("stats").
+	result := repo.DB.Table("stats").
 		Select(selectQuere).
 		Where("date BETWEEN ? AND ?", from, to).
 		Group("period").
 		Order("period").
 		Scan(&statResponse)
+	if result.Error != nil {
+		fmt.Println(result.Error)
+	}
 	return statResponse
 }
