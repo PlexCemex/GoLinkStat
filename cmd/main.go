@@ -13,7 +13,7 @@ import (
 	"projects/GoLinkStat/pkg/middleware"
 )
 
-func main() {
+func App() http.Handler {
 	conf := configs.LoadConfig()
 	dataBase := db.NewDb(conf)
 	router := http.NewServeMux()
@@ -46,19 +46,22 @@ func main() {
 		Config:         conf,
 	})
 
+	go statService.AddClick()
+	
 	// Middlewares
-	chain := middleware.Chain(
+	stack := middleware.Chain(
 		middleware.CORS,
 		middleware.Logging,
 	)
-
+	return stack(router)
+}
+func main() {
+	app := App()
 	server := http.Server{
 		Addr:    ":7080",
-		Handler: chain(router),
+		Handler: app,
 	}
 
-	go statService.AddClick()
-
-	fmt.Println("Server is listening on port:", server.Addr)
 	server.ListenAndServe()
+	fmt.Println("Server is listening on port:", server.Addr)
 }

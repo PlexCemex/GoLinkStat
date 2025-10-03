@@ -4,3 +4,4 @@
 /.vscode/
 /SQL requests/
 /docker-compose.yml
+/cmd/.env
