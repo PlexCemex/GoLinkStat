@@ -1,11 +1,16 @@
 package stat
 
 import (
-	"fmt"
 	"net/http"
 	"projects/GoLinkStat/configs"
 	"projects/GoLinkStat/pkg/middleware"
+	"projects/GoLinkStat/pkg/response"
 	"time"
+)
+
+const (
+	GroupByDay   = "day"
+	GroupByMonth = "month"
 )
 
 type StatHandlerDeps struct {
@@ -36,10 +41,11 @@ func (h *StatHandler) GetStat() http.HandlerFunc {
 			return
 		}
 		by := r.URL.Query().Get("by")
-		if by != "day" && by != "month" {
+		if by != GroupByDay && by != GroupByMonth {
 			http.Error(w, "Invalid by param", http.StatusBadRequest)
 			return
 		}
-		fmt.Println(from, to, by)
+		statResponse := h.StatRepository.GetStat(by, from, to)
+		response.Json(statResponse, w, 200)
 	}
 }
