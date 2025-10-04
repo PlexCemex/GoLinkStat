@@ -4,11 +4,37 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"projects/GoLinkStat/internal/auth"
+	"runtime"
 	"testing"
+
+	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
+
+func initDB() *gorm.DB {
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		log.Fatal("Не удается определить путь к текущему файлу")
+	}
+	projectRoot := filepath.Dir(filepath.Dir(filename))
+	envPath := filepath.Join(projectRoot, ".env")
+	err := godotenv.Load(envPath)
+	if err != nil {
+		panic(err.Error())
+	}
+	db, err := gorm.Open(postgres.Open(os.Getenv("DSN")), &gorm.Config{})
+	if err != nil {
+		panic(err.Error())
+	}
+	return db
+}
 
 func TestLoginSuccess(t *testing.T) {
 	ts := httptest.NewServer(App())
