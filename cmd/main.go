@@ -47,7 +47,7 @@ func App() http.Handler {
 	})
 
 	go statService.AddClick()
-	
+
 	// Middlewares
 	stack := middleware.Chain(
 		middleware.CORS,
@@ -62,6 +62,6 @@ func main() {
 		Handler: app,
 	}
 
+	fmt.Println("Server is listening on port: ", server.Addr)
 	server.ListenAndServe()
-	fmt.Println("Server is listening on port:", server.Addr)
 }
