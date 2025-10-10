@@ -2,6 +2,7 @@ package link
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"net/http"
 	"projects/GoLinkStat/configs"
 	"projects/GoLinkStat/pkg/event"
@@ -9,7 +10,6 @@ import (
 	"projects/GoLinkStat/pkg/request"
 	"projects/GoLinkStat/pkg/response"
 	"strconv"
-	"gorm.io/gorm"
 )
 
 type LinkHandlerDeps struct {
@@ -27,11 +27,11 @@ func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
 		LinkRepository: deps.LinkRepository,
 		EventBus:       deps.EventBus,
 	}
-	router.HandleFunc("POST /link", handler.Create())
+	router.Handle("POST /link", middleware.IsAuthed(handler.Create(), deps.Config))
 	router.Handle("GET /{hash}", middleware.IsAuthed(handler.GoTo(), deps.Config))
 	router.Handle("GET /link/", middleware.IsAuthed(handler.GetAll(), deps.Config))
 	router.Handle("PATCH /link/{id}", middleware.IsAuthed(handler.Update(), deps.Config))
-	router.HandleFunc("DELETE /link/{id}", handler.Delete())
+	router.Handle("DELETE /link/{id}", middleware.IsAuthed(handler.Delete(), deps.Config))
 }
 
 func (handler *LinkHandler) Create() http.HandlerFunc {
