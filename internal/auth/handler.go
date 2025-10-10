@@ -12,13 +12,13 @@ type AuthHandlerDeps struct {
 	*configs.Config
 	*AuthService
 }
-type authHandler struct {
+type AuthHandler struct {
 	*configs.Config
 	*AuthService
 }
 
 func NewAuthHandler(router *http.ServeMux, deps AuthHandlerDeps) {
-	handler := &authHandler{
+	handler := &AuthHandler{
 		Config:      deps.Config,
 		AuthService: deps.AuthService,
 	}
@@ -26,7 +26,7 @@ func NewAuthHandler(router *http.ServeMux, deps AuthHandlerDeps) {
 	router.HandleFunc("POST /auth/login", handler.Login())
 }
 
-func (handler *authHandler) Register() http.HandlerFunc {
+func (handler *AuthHandler) Register() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		body, err := request.HandleBody[RegisterRequest](&w, r)
 		if err != nil {
@@ -47,11 +47,11 @@ func (handler *authHandler) Register() http.HandlerFunc {
 		data := RegisterResponse{
 			Token: jwtToken,
 		}
-		response.Json(data, w, 200)
+		response.Json(data, w, 201)
 	}
 }
 
-func (handler *authHandler) Login() http.HandlerFunc {
+func (handler *AuthHandler) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		requestLogin, err := request.HandleBody[LoginRequest](&w, r)
 		if err != nil {
